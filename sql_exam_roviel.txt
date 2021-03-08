@@ -1,0 +1,25 @@
+SELECT
+	concat('T',lpad(t.id,11,0)) as ID,
+	t.nickname as Nickname,
+    s.status_value as Status,
+    GROUP_CONCAT(r.role_value SEPARATOR '/') as Roles
+FROM trn_teacher as t 
+JOIN status as s ON t.id = s.status_id
+JOIN trn_teacher_role as tr ON t.id = tr.teacher_id
+JOIN roles as r ON r.role_id = tr.role;
+
+
+
+
+SELECT
+	t.id as ID,
+    t.nickname as Nickname,
+    sum(if(tt.status = 1, 1, 0)) as Open,
+    sum(if(tt.status = 3, 1, 0)) as Reseved,
+    sum(if(tt.status = 1, 1, 0)) as Taught,
+    sum(if(tt.status = 2, 1, 0)) as 'No Show'
+
+FROM trn_teacher as t
+left JOIN trn_time_table as tt ON t.id = tt.teacher_id
+left join trn_evaluation as te ON te.teacher_id=t.id
+GROUP BY t.id
